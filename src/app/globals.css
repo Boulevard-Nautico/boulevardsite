@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   TOKENS DE ALTO PADRÃO — Boulevard Náutico
+   Mapeados como tokens do Tailwind v4 (geram utilitários: bg-navy, text-gold, font-title…)
+   ========================================================================= */
+@theme {
+  --color-navy: #0a192f;
+  --color-navy-light: #112a46;
+  --color-gold: #c5a880;
+  --color-gold-hover: #d6bfa0;
+  /* Ouro específico do hero (subtítulo, dots ativos, hover da seta) */
+  --color-hero-gold: #d4af37;
+  --color-wa: #25d366;
+  --color-wa-hover: #1da851;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #555555;
+  --color-cream: #f9f9f8;
+
+  /* Fontes — as variáveis vêm do next/font (definidas no <html>) */
+  --font-title: var(--font-marcellus), serif;
+  --font-body: var(--font-jost), sans-serif;
+  --font-jakarta: var(--font-jakarta), sans-serif;
+
+  --shadow-soft: 0 15px 35px rgba(10, 25, 47, 0.05);
+  --ease-luxury: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  --animate-bounce-down: bounce-down 2s infinite;
+  --animate-wa-pulse: wa-pulse 2s infinite;
+
+  @keyframes bounce-down {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+    40% { transform: translateY(-15px) translateX(-50%); }
+    60% { transform: translateY(-7px) translateX(-50%); }
+  }
+  @keyframes wa-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+  }
+}
+
+/* =========================================================================
+   BASE — dentro de @layer base para que os utilitários do Tailwind
+   (ex.: text-white, text-gold) tenham prioridade sobre estes padrões.
+   ========================================================================= */
+@layer base {
+  :root {
+    /* offset para âncoras não ficarem atrás da navbar fixa */
+    scroll-padding-top: 90px;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-title);
+    font-weight: 400;
+    color: var(--color-navy);
+    line-height: 1.2;
+  }
+
+  p {
+    color: var(--color-ink-soft);
+    font-weight: 300;
+  }
+}
+
+/* =========================================================================
+   ANIMAÇÃO DE REVEAL (entrada no scroll) — controlada via IntersectionObserver
+   ========================================================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: 0.8s var(--ease-luxury);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
