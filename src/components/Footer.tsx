@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Mail, MapPin } from "lucide-react";
+import InstagramIcon from "./InstagramIcon";
 import WhatsappIcon from "./WhatsappIcon";
 import { site } from "@/content/site";
 
@@ -63,6 +64,16 @@ export default function Footer() {
               <MapPin className="h-4 w-4 shrink-0 text-gold" />
               {contact.location}
             </p>
+            <a
+              href={contact.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Abrir Instagram ${contact.instagramHandle}`}
+              className="mt-6 inline-flex items-center gap-2 rounded border border-gold px-4 py-3 text-[0.82rem] font-semibold uppercase tracking-[1px] text-gold transition-all hover:bg-gold hover:text-navy"
+            >
+              <InstagramIcon className="h-4 w-4 shrink-0" />
+              {contact.instagramHandle}
+            </a>
           </div>
         </div>
 

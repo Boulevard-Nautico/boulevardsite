@@ -55,6 +55,8 @@ export interface SiteContact {
   whatsapp: string;
   /** Como o número aparece para o usuário (no rodapé) */
   whatsappDisplay: string;
+  instagramUrl: string;
+  instagramHandle: string;
   email: string;
   location: string;
   footerDescription: string;
@@ -147,7 +149,9 @@ export const site: SiteContent = {
 
   contact: {
     whatsapp: "5524992588898",
-    whatsappDisplay: "55 24 99258-8898",
+    whatsappDisplay: "(24) 99258-8898",
+    instagramUrl: "https://www.instagram.com/boulevard.nautico/",
+    instagramHandle: "@boulevard.nautico",
     email: "reservas@boulevardnautico.com.br",
     location: "Cais de Angra dos Reis, RJ",
     footerDescription:
