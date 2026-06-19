@@ -153,7 +153,7 @@ export const site: SiteContent = {
     instagramUrl: "https://www.instagram.com/boulevard.nautico/",
     instagramHandle: "@boulevard.nautico",
     email: "nauticoboulevard@gmail.com",
-    location: "Cais de Angra dos Reis, RJ",
+    location: "Shopping Piratas, Angra dos Reis RJ",
     footerDescription:
       "Redefinindo o conceito de luxo e exclusividade no turismo náutico de Angra dos Reis. Navegue com o Padrão Ouro.",
     conciergeName: "Erick - Boulevard Náutico",
