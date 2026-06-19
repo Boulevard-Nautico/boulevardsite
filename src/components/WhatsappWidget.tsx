@@ -14,7 +14,7 @@ export default function WhatsappWidget() {
 
   const send = () => {
     const text = message.trim() || DEFAULT_WA_MESSAGE;
-    window.open(whatsappLink(contact.whatsapp, text), "_blank");
+    window.open(whatsappLink(contact.whatsapp, text), "_blank", "noopener,noreferrer");
     setMessage("");
     setOpen(false);
   };
