@@ -152,7 +152,7 @@ export const site: SiteContent = {
     whatsappDisplay: "(24) 99258-8898",
     instagramUrl: "https://www.instagram.com/boulevard.nautico/",
     instagramHandle: "@boulevard.nautico",
-    email: "reservas@boulevardnautico.com.br",
+    email: "nauticoboulevard@gmail.com",
     location: "Cais de Angra dos Reis, RJ",
     footerDescription:
       "Redefinindo o conceito de luxo e exclusividade no turismo náutico de Angra dos Reis. Navegue com o Padrão Ouro.",
