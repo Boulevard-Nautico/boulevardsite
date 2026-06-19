@@ -73,14 +73,10 @@ export default function Footer() {
               <InstagramIcon className="h-4 w-4 shrink-0 text-gold" />
               {contact.instagramHandle}
             </a>
-            <a
-              href={`mailto:${contact.email}`}
-              aria-label={`Enviar email para ${contact.email}`}
-              className="mb-4 flex items-center gap-3 text-[0.95rem] text-white/70 transition-all hover:text-gold max-md:justify-center"
-            >
+            <p className="mb-4 flex items-center gap-3 text-[0.95rem] text-white/70 max-md:justify-center">
               <Mail className="h-4 w-4 shrink-0 text-gold" />
               {contact.email}
-            </a>
+            </p>
             <p className="mb-4 flex items-center gap-3 text-[0.95rem] text-white/70 max-md:justify-center">
               <MapPin className="h-4 w-4 shrink-0 text-gold" />
               {contact.location}
