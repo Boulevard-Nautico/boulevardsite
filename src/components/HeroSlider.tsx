@@ -40,7 +40,7 @@ export default function HeroSlider() {
             >
               <Image
                 src={slide.image}
-                alt={slide.title}
+                alt={slide.alt}
                 fill
                 priority={i === 0}
                 sizes="100vw"
@@ -50,21 +50,23 @@ export default function HeroSlider() {
               {/* Overlay escuro para legibilidade */}
               <div className="absolute inset-0 bg-black/50" />
 
-              <div className="relative z-[2] max-w-[900px] px-5 text-white">
-                {slide.subtitle && (
-                  <span className="mb-[15px] inline-block text-base font-semibold uppercase tracking-[3px] text-hero-gold max-md:text-[0.85rem]">
-                    {slide.subtitle}
-                  </span>
-                )}
-                <h1 className="mb-[25px] text-[4rem] font-bold leading-[1.1] text-white [text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] max-md:text-[2.5rem]">
-                  {slide.title}
-                </h1>
-                {slide.description && (
-                  <p className="mx-auto max-w-[700px] text-[1.25rem] font-light leading-[1.6] text-white max-md:text-[1.05rem]">
-                    {slide.description}
-                  </p>
-                )}
-              </div>
+              {slide.title && (
+                <div className="relative z-[2] max-w-[900px] px-5 text-white">
+                  {slide.subtitle && (
+                    <span className="mb-[15px] inline-block text-base font-semibold uppercase tracking-[3px] text-hero-gold max-md:text-[0.85rem]">
+                      {slide.subtitle}
+                    </span>
+                  )}
+                  <h1 className="mb-[25px] text-[4rem] font-bold leading-[1.1] text-white [text-shadow:2px_2px_4px_rgba(0,0,0,0.3)] max-md:text-[2.5rem]">
+                    {slide.title}
+                  </h1>
+                  {slide.description && (
+                    <p className="mx-auto max-w-[700px] text-[1.25rem] font-light leading-[1.6] text-white max-md:text-[1.05rem]">
+                      {slide.description}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
