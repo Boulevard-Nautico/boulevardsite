@@ -23,11 +23,6 @@ import img5053 from "@/assets/live/IMG_5053-scaled.jpg";
 import logo from "@/assets/brand/logo-boulevard.png";
 import conciergeAvatar from "@/assets/brand/concierge-erick.png";
 
-// Artes promocionais (hero)
-import artChurrasco from "@/assets/artes/churrasco-a-bordo.png";
-import artComemoracao from "@/assets/artes/faca-sua-comemoracao.png";
-import artSeguranca from "@/assets/artes/seguranca-e-conforto.png";
-
 /* ====================================================================
    TIPOS
    ==================================================================== */
@@ -103,18 +98,6 @@ export const site: SiteContent = {
       title: "O Padrão Ouro no Mar de Angra dos Reis",
       description:
         "A curadoria Boulevard Náutico para quem exige excelência, conforto absoluto e roteiros verdadeiramente exclusivos.",
-    },
-    {
-      image: artChurrasco,
-      alt: "Churrasco a bordo — sabor com vista para o paraíso",
-    },
-    {
-      image: artComemoracao,
-      alt: "Faça aqui a sua comemoração — personalizamos com seu tema",
-    },
-    {
-      image: artSeguranca,
-      alt: "Chegue, estacione com segurança e embarque com tranquilidade",
     },
   ],
 
