@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { Mail, MapPin } from "lucide-react";
+import InstagramIcon from "./InstagramIcon";
 import WhatsappIcon from "./WhatsappIcon";
 import { site } from "@/content/site";
+import { DEFAULT_WA_MESSAGE, whatsappLink } from "@/lib/whatsapp";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -51,10 +53,26 @@ export default function Footer() {
             <h3 className="mb-6 font-title text-[1.2rem] text-gold">
               Concierge Desk
             </h3>
-            <p className="mb-4 flex items-center gap-3 text-[0.95rem] text-white/70 max-md:justify-center">
+            <a
+              href={whatsappLink(contact.whatsapp, DEFAULT_WA_MESSAGE)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Falar no WhatsApp ${contact.whatsappDisplay}`}
+              className="mb-3 flex items-center gap-3 text-[0.95rem] text-white/70 transition-all hover:text-gold max-md:justify-center"
+            >
               <WhatsappIcon className="h-4 w-4 shrink-0 text-gold" />
               {contact.whatsappDisplay}
-            </p>
+            </a>
+            <a
+              href={contact.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Abrir Instagram ${contact.instagramHandle}`}
+              className="mb-4 flex items-center gap-3 text-[0.95rem] text-white/70 transition-all hover:text-gold max-md:justify-center"
+            >
+              <InstagramIcon className="h-4 w-4 shrink-0 text-gold" />
+              {contact.instagramHandle}
+            </a>
             <p className="mb-4 flex items-center gap-3 text-[0.95rem] text-white/70 max-md:justify-center">
               <Mail className="h-4 w-4 shrink-0 text-gold" />
               {contact.email}
