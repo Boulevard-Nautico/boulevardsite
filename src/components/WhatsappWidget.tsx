@@ -4,13 +4,18 @@ import { useState } from "react";
 import Image from "next/image";
 import { Send, X } from "lucide-react";
 import WhatsappIcon from "./WhatsappIcon";
-import { site } from "@/content/site";
 import { whatsappLink, DEFAULT_WA_MESSAGE } from "@/lib/whatsapp";
+import type { SiteContact } from "@/types/site";
 
-export default function WhatsappWidget() {
+export default function WhatsappWidget({
+  brandName,
+  contact,
+}: {
+  brandName: string;
+  contact: SiteContact;
+}) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const { contact } = site;
 
   const send = () => {
     const text = message.trim() || DEFAULT_WA_MESSAGE;
@@ -38,6 +43,8 @@ export default function WhatsappWidget() {
             <Image
               src={contact.conciergeAvatar}
               alt={contact.conciergeName}
+              width={50}
+              height={50}
               className="h-full w-full object-cover"
             />
           </div>
@@ -64,7 +71,7 @@ export default function WhatsappWidget() {
         <div className="min-h-[200px] bg-cream p-5 px-5 py-6">
           <div className="rounded-[0_12px_12px_12px] bg-white p-4 text-[0.95rem] leading-[1.5] text-ink shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
             <strong className="mb-1.5 block text-[0.85rem] text-gold">
-              {site.brand.name}
+              {brandName}
             </strong>
             Olá! Bem-vindo(a) ao atendimento exclusivo. Como posso ajudar a
             planejar sua experiência em Angra dos Reis hoje?

@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import type { StaticImageData } from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { blurPlaceholderProps } from "@/lib/images";
+import type { SiteImage } from "@/types/site";
 
 interface GalleryProps {
-  images: StaticImageData[];
+  images: SiteImage[];
   alt: string;
 }
 
@@ -30,6 +31,14 @@ export default function Gallery({ images, alt }: GalleryProps) {
 
   const single = images.length <= 1;
 
+  if (images.length === 0) {
+    return (
+      <div className="flex h-full items-center justify-center bg-navy text-sm uppercase tracking-[0.08em] text-white/60">
+        Imagem indisponivel
+      </div>
+    );
+  }
+
   return (
     <div className="h-full overflow-hidden" ref={single ? undefined : emblaRef}>
       <div className="flex h-full">
@@ -40,7 +49,7 @@ export default function Gallery({ images, alt }: GalleryProps) {
               alt={`${alt} — foto ${i + 1}`}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
-              placeholder="blur"
+              {...blurPlaceholderProps(img)}
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
           </div>

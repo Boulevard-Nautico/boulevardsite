@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { site } from "@/content/site";
+import type { SiteBrand } from "@/types/site";
 
 const links = [
   { href: "#signature", label: "Passeios Signature" },
   { href: "#relatos", label: "Depoimentos" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ brand }: { brand: SiteBrand }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -32,8 +32,10 @@ export default function Navbar() {
     >
       <a href="#top" onClick={close} className="relative z-[1001] block">
         <Image
-          src={site.brand.logo}
-          alt={site.brand.name}
+          src={brand.logo}
+          alt={brand.name}
+          width={160}
+          height={80}
           priority
           className="h-auto w-[120px]"
         />

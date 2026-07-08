@@ -1,5 +1,5 @@
 import { Quote } from "lucide-react";
-import type { Review } from "@/content/site";
+import type { Review } from "@/types/site";
 
 export default function ReviewCard({ review }: { review: Review }) {
   const stars = "★".repeat(review.stars) + "☆".repeat(Math.max(0, 5 - review.stars));

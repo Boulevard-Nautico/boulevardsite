@@ -2,10 +2,10 @@ import Image from "next/image";
 import { Mail, MapPin } from "lucide-react";
 import InstagramIcon from "./InstagramIcon";
 import WhatsappIcon from "./WhatsappIcon";
-import { site } from "@/content/site";
 import { DEFAULT_WA_MESSAGE, whatsappLink } from "@/lib/whatsapp";
+import type { SiteContent } from "@/types/site";
 
-export default function Footer() {
+export default function Footer({ site }: { site: SiteContent }) {
   const year = new Date().getFullYear();
   const { contact, brand } = site;
 
@@ -18,6 +18,8 @@ export default function Footer() {
             <Image
               src={brand.logo}
               alt={brand.name}
+              width={180}
+              height={90}
               className="h-auto w-[150px] max-md:mx-auto"
             />
             <p className="mt-5 max-w-[350px] text-[0.95rem] text-white/60 max-md:mx-auto">

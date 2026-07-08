@@ -6,9 +6,10 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import Fade from "embla-carousel-fade";
 import { ChevronDown } from "lucide-react";
-import { site } from "@/content/site";
+import { blurPlaceholderProps } from "@/lib/images";
+import type { HeroSlide } from "@/types/site";
 
-export default function HeroSlider() {
+export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Fade(),
     Autoplay({ delay: 5000, stopOnInteraction: false }),
@@ -29,11 +30,15 @@ export default function HeroSlider() {
     };
   }, [emblaApi]);
 
+  if (slides.length === 0) {
+    return null;
+  }
+
   return (
     <header id="top" className="relative h-screen w-full overflow-hidden bg-[#111]">
       <div className="h-full" ref={emblaRef}>
         <div className="flex h-full">
-          {site.hero.map((slide, i) => (
+          {slides.map((slide, i) => (
             <div
               key={i}
               className="relative flex h-full min-w-0 flex-[0_0_100%] flex-col items-center justify-center text-center"
@@ -44,7 +49,7 @@ export default function HeroSlider() {
                 fill
                 priority={i === 0}
                 sizes="100vw"
-                placeholder="blur"
+                {...blurPlaceholderProps(slide.image)}
                 className="object-cover"
               />
               {/* Overlay escuro para legibilidade */}
@@ -72,7 +77,7 @@ export default function HeroSlider() {
 
       {/* Dots */}
       <div className="absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 gap-3">
-        {site.hero.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             type="button"

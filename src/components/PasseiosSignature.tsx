@@ -1,9 +1,15 @@
 import Reveal from "./Reveal";
 import SectionHeader from "./SectionHeader";
 import TourCard from "./TourCard";
-import { site } from "@/content/site";
+import type { SiteContact, Tour } from "@/types/site";
 
-export default function PasseiosSignature() {
+export default function PasseiosSignature({
+  tours,
+  contact,
+}: {
+  tours: Tour[];
+  contact: SiteContact;
+}) {
   return (
     <section id="signature" className="py-[100px] max-md:py-[60px]">
       <div className="mx-auto max-w-[1300px] px-6">
@@ -15,9 +21,9 @@ export default function PasseiosSignature() {
         </Reveal>
 
         <div className="grid gap-[30px] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] max-[480px]:grid-cols-1">
-          {site.tours.map((tour) => (
+          {tours.map((tour) => (
             <Reveal key={tour.slug}>
-              <TourCard tour={tour} />
+              <TourCard tour={tour} contact={contact} />
             </Reveal>
           ))}
         </div>

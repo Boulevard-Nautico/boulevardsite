@@ -1,11 +1,17 @@
 import { whatsappLink } from "@/lib/whatsapp";
-import { site, type Tour } from "@/content/site";
+import type { SiteContact, Tour } from "@/types/site";
 import Gallery from "./Gallery";
 import WhatsappIcon from "./WhatsappIcon";
 
-export default function TourCard({ tour }: { tour: Tour }) {
+export default function TourCard({
+  tour,
+  contact,
+}: {
+  tour: Tour;
+  contact: SiteContact;
+}) {
   const href = whatsappLink(
-    site.contact.whatsapp,
+    contact.whatsapp,
     `Desejo reservar o passeio: ${tour.title}`,
   );
 

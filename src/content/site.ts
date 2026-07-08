@@ -1,4 +1,4 @@
-import type { StaticImageData } from "next/image";
+import type { SiteContent } from "@/types/site";
 
 // Hero
 import heroLagoa3 from "@/assets/live/0605-Captacao-Boulevart-Nautico-Super-Lagoa-Azul-3-scaled.jpg";
@@ -24,61 +24,18 @@ import logo from "@/assets/brand/logo-boulevard.png";
 import conciergeAvatar from "@/assets/brand/concierge-erick.png";
 
 /* ====================================================================
-   TIPOS
-   ==================================================================== */
-export interface HeroSlide {
-  image: StaticImageData;
-  subtitle?: string;
-  title: string;
-  description?: string;
-}
-
-export interface Tour {
-  slug: string;
-  title: string;
-  description: string;
-  /** Valor em reais, sem o prefixo "R$". Ex: "150" */
-  price: string;
-  tag?: string;
-  images: StaticImageData[];
-}
-
-export interface Review {
-  stars: number; // 1–5
-  text: string;
-  name: string;
-  location: string;
-}
-
-export interface SiteContact {
-  /** Apenas dígitos: país + DDD + número (usado nos links wa.me) */
-  whatsapp: string;
-  /** Como o número aparece para o usuário (no rodapé) */
-  whatsappDisplay: string;
-  instagramUrl: string;
-  instagramHandle: string;
-  email: string;
-  location: string;
-  footerDescription: string;
-  conciergeName: string;
-  conciergeAvatar: StaticImageData;
-}
-
-export interface SiteContent {
-  brand: { logo: StaticImageData; name: string };
-  hero: HeroSlide[];
-  tours: Tour[];
-  reviews: Review[];
-  contact: SiteContact;
-}
-
-/* ====================================================================
    CONTEÚDO — réplica exata do site atual. Edite aqui e faça deploy.
    ==================================================================== */
 export const site: SiteContent = {
   brand: {
     logo,
     name: "Boulevard Náutico",
+  },
+
+  seo: {
+    title: "Boulevard Náutico | Padrão Ouro em Angra dos Reis",
+    description:
+      "Passeios náuticos de alto padrão pela Costa Verde — Angra dos Reis e Ilha Grande. Roteiros exclusivos, frota premium e atendimento concierge.",
   },
 
   hero: [

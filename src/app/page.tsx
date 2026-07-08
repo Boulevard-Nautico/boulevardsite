@@ -4,9 +4,29 @@ import PasseiosSignature from "@/components/PasseiosSignature";
 import Depoimentos from "@/components/Depoimentos";
 import Footer from "@/components/Footer";
 import WhatsappWidget from "@/components/WhatsappWidget";
-import { site } from "@/content/site";
+import { getPublicSiteContent, getRenderableContent } from "@/lib/content";
+import type { Metadata } from "next";
 
-export default function Home() {
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getPublicSiteContent();
+
+  return {
+    title: site.seo.title,
+    description: site.seo.description,
+    openGraph: {
+      title: site.seo.title,
+      description: site.seo.description,
+      siteName: site.brand.name,
+      locale: "pt_BR",
+      type: "website",
+    },
+  };
+}
+
+export default async function Home() {
+  const site = getRenderableContent(await getPublicSiteContent());
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
@@ -40,14 +60,14 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Navbar />
+      <Navbar brand={site.brand} />
       <main>
-        <HeroSlider />
-        <PasseiosSignature />
-        <Depoimentos />
+        <HeroSlider slides={site.hero} />
+        <PasseiosSignature tours={site.tours} contact={site.contact} />
+        <Depoimentos reviews={site.reviews} />
       </main>
-      <Footer />
-      <WhatsappWidget />
+      <Footer site={site} />
+      <WhatsappWidget brandName={site.brand.name} contact={site.contact} />
     </>
   );
 }

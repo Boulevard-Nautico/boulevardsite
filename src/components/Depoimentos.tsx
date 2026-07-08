@@ -1,9 +1,9 @@
 import Reveal from "./Reveal";
 import SectionHeader from "./SectionHeader";
 import ReviewCard from "./ReviewCard";
-import { site } from "@/content/site";
+import type { Review } from "@/types/site";
 
-export default function Depoimentos() {
+export default function Depoimentos({ reviews }: { reviews: Review[] }) {
   return (
     <section id="relatos" className="bg-white py-[100px] max-md:py-[60px]">
       <div className="mx-auto max-w-[1300px] px-6">
@@ -12,7 +12,7 @@ export default function Depoimentos() {
         </Reveal>
 
         <div className="grid gap-[30px] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] max-[480px]:grid-cols-1">
-          {site.reviews.map((review, i) => (
+          {reviews.map((review, i) => (
             <Reveal key={i}>
               <ReviewCard review={review} />
             </Reveal>
