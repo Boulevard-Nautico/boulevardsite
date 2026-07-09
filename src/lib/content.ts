@@ -34,13 +34,33 @@ export async function getEditableSiteContent(): Promise<EditableSiteContentResul
   }
 
   try {
-    const [settings] = await db
+    const settingsRows = await db
       .select()
       .from(siteSettings)
       .where(eq(siteSettings.id, 1))
       .limit(1);
+    const heroRows = await db
+      .select()
+      .from(heroSlides)
+      .orderBy(asc(heroSlides.sortOrder), asc(heroSlides.id));
+    const tourRows = await db
+      .select()
+      .from(tours)
+      .orderBy(asc(tours.sortOrder), asc(tours.id));
+    const tourImageRows = await db
+      .select()
+      .from(tourImages)
+      .orderBy(asc(tourImages.sortOrder), asc(tourImages.id));
+    const reviewRows = await db
+      .select()
+      .from(reviews)
+      .orderBy(asc(reviews.sortOrder), asc(reviews.id));
+    const [settings] = settingsRows;
+    const hasDbSettings = Boolean(settings);
+    const hasPartialDbContent =
+      heroRows.length > 0 || tourRows.length > 0 || reviewRows.length > 0;
 
-    if (!settings) {
+    if (!settings && !hasPartialDbContent) {
       return {
         content: fallbackSite,
         dbConfigured: true,
@@ -48,70 +68,76 @@ export async function getEditableSiteContent(): Promise<EditableSiteContentResul
       };
     }
 
-    const [heroRows, tourRows, tourImageRows, reviewRows] = await Promise.all([
-      db.select().from(heroSlides).orderBy(asc(heroSlides.sortOrder), asc(heroSlides.id)),
-      db.select().from(tours).orderBy(asc(tours.sortOrder), asc(tours.id)),
-      db.select().from(tourImages).orderBy(asc(tourImages.sortOrder), asc(tourImages.id)),
-      db.select().from(reviews).orderBy(asc(reviews.sortOrder), asc(reviews.id)),
-    ]);
+    const mappedHero = heroRows.map<HeroSlide>((slide) => ({
+      id: slide.id,
+      image: slide.imageUrl,
+      subtitle: slide.subtitle,
+      title: slide.title,
+      description: slide.description,
+      order: slide.sortOrder,
+      active: slide.active,
+    }));
+    const mappedTours = tourRows.map<Tour>((tour) => ({
+      id: tour.id,
+      slug: tour.slug,
+      title: tour.title,
+      tag: tour.tag,
+      description: tour.description,
+      price: tour.price,
+      order: tour.sortOrder,
+      active: tour.active,
+      images: tourImageRows
+        .filter((image) => image.tourId === tour.id)
+        .map((image) => image.imageUrl),
+    }));
+    const mappedReviews = reviewRows.map<Review>((review) => ({
+      id: review.id,
+      stars: review.stars,
+      text: review.text,
+      name: review.name,
+      location: review.location,
+      order: review.sortOrder,
+      active: review.active,
+    }));
 
     const content: SiteContent = {
       brand: {
-        logo: settings.logoUrl,
-        name: settings.brandName,
+        logo: settings?.logoUrl ?? fallbackSite.brand.logo,
+        name: settings?.brandName ?? fallbackSite.brand.name,
       },
       seo: {
-        title: settings.seoTitle,
-        description: settings.seoDescription,
+        title: settings?.seoTitle ?? fallbackSite.seo.title,
+        description: settings?.seoDescription ?? fallbackSite.seo.description,
       },
       contact: {
-        whatsapp: settings.whatsapp,
-        whatsappDisplay: settings.whatsappDisplay,
-        instagramUrl: settings.instagramUrl,
-        instagramHandle: settings.instagramHandle,
-        email: settings.email,
-        location: settings.location,
-        footerDescription: settings.footerDescription,
-        conciergeName: settings.conciergeName,
-        conciergeAvatar: settings.conciergeAvatarUrl,
+        whatsapp: settings?.whatsapp ?? fallbackSite.contact.whatsapp,
+        whatsappDisplay:
+          settings?.whatsappDisplay ?? fallbackSite.contact.whatsappDisplay,
+        instagramUrl: settings?.instagramUrl ?? fallbackSite.contact.instagramUrl,
+        instagramHandle:
+          settings?.instagramHandle ?? fallbackSite.contact.instagramHandle,
+        email: settings?.email ?? fallbackSite.contact.email,
+        location: settings?.location ?? fallbackSite.contact.location,
+        footerDescription:
+          settings?.footerDescription ?? fallbackSite.contact.footerDescription,
+        conciergeName:
+          settings?.conciergeName ?? fallbackSite.contact.conciergeName,
+        conciergeAvatar:
+          settings?.conciergeAvatarUrl ?? fallbackSite.contact.conciergeAvatar,
       },
-      hero: heroRows.map<HeroSlide>((slide) => ({
-        id: slide.id,
-        image: slide.imageUrl,
-        subtitle: slide.subtitle,
-        title: slide.title,
-        description: slide.description,
-        order: slide.sortOrder,
-        active: slide.active,
-      })),
-      tours: tourRows.map<Tour>((tour) => ({
-        id: tour.id,
-        slug: tour.slug,
-        title: tour.title,
-        tag: tour.tag,
-        description: tour.description,
-        price: tour.price,
-        order: tour.sortOrder,
-        active: tour.active,
-        images: tourImageRows
-          .filter((image) => image.tourId === tour.id)
-          .map((image) => image.imageUrl),
-      })),
-      reviews: reviewRows.map<Review>((review) => ({
-        id: review.id,
-        stars: review.stars,
-        text: review.text,
-        name: review.name,
-        location: review.location,
-        order: review.sortOrder,
-        active: review.active,
-      })),
+      hero: mappedHero.length > 0 ? mappedHero : fallbackSite.hero,
+      tours: mappedTours.length > 0 ? mappedTours : fallbackSite.tours,
+      reviews: mappedReviews.length > 0 ? mappedReviews : fallbackSite.reviews,
     };
 
     return {
       content,
       dbConfigured: true,
-      usingFallback: false,
+      usingFallback:
+        !hasDbSettings ||
+        mappedHero.length === 0 ||
+        mappedTours.length === 0 ||
+        mappedReviews.length === 0,
     };
   } catch {
     return {

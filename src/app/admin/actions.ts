@@ -117,6 +117,31 @@ function revalidatePublicSite() {
   revalidatePath("/admin");
 }
 
+function fallbackSettingsValues() {
+  return {
+    brandName: fallbackSite.brand.name,
+    logoUrl: imageToUrl(fallbackSite.brand.logo),
+    seoTitle: fallbackSite.seo.title,
+    seoDescription: fallbackSite.seo.description,
+    whatsapp: fallbackSite.contact.whatsapp,
+    whatsappDisplay: fallbackSite.contact.whatsappDisplay,
+    instagramUrl: fallbackSite.contact.instagramUrl,
+    instagramHandle: fallbackSite.contact.instagramHandle,
+    email: fallbackSite.contact.email,
+    location: fallbackSite.contact.location,
+    footerDescription: fallbackSite.contact.footerDescription,
+    conciergeName: fallbackSite.contact.conciergeName,
+    conciergeAvatarUrl: imageToUrl(fallbackSite.contact.conciergeAvatar),
+  };
+}
+
+async function ensureSiteSettings(db: ReturnType<typeof requireDb>) {
+  await db
+    .insert(siteSettings)
+    .values({ id: 1, ...fallbackSettingsValues(), updatedAt: new Date() })
+    .onConflictDoNothing({ target: siteSettings.id });
+}
+
 export async function saveSiteSettings(formData: FormData) {
   await requireAdminAction();
   const db = requireDb();
@@ -150,6 +175,7 @@ export async function saveSiteSettings(formData: FormData) {
 export async function saveHeroSlide(formData: FormData) {
   await requireAdminAction();
   const db = requireDb();
+  await ensureSiteSettings(db);
   const data = heroSchema.parse({
     id: optionalId(formData),
     imageUrl: value(formData, "imageUrl"),
@@ -193,6 +219,7 @@ export async function deleteHeroSlide(formData: FormData) {
 export async function saveTour(formData: FormData) {
   await requireAdminAction();
   const db = requireDb();
+  await ensureSiteSettings(db);
   const parsed = tourSchema.parse({
     id: optionalId(formData),
     slug: value(formData, "slug"),
@@ -260,6 +287,7 @@ export async function deleteTour(formData: FormData) {
 export async function saveReview(formData: FormData) {
   await requireAdminAction();
   const db = requireDb();
+  await ensureSiteSettings(db);
   const data = reviewSchema.parse({
     id: optionalId(formData),
     stars: numericValue(formData, "stars", 5),
@@ -304,50 +332,12 @@ export async function seedFallbackContent() {
   await requireAdminAction();
   const db = requireDb();
 
-  await db
-    .insert(siteSettings)
-    .values({
-      id: 1,
-      brandName: fallbackSite.brand.name,
-      logoUrl: imageToUrl(fallbackSite.brand.logo),
-      seoTitle: fallbackSite.seo.title,
-      seoDescription: fallbackSite.seo.description,
-      whatsapp: fallbackSite.contact.whatsapp,
-      whatsappDisplay: fallbackSite.contact.whatsappDisplay,
-      instagramUrl: fallbackSite.contact.instagramUrl,
-      instagramHandle: fallbackSite.contact.instagramHandle,
-      email: fallbackSite.contact.email,
-      location: fallbackSite.contact.location,
-      footerDescription: fallbackSite.contact.footerDescription,
-      conciergeName: fallbackSite.contact.conciergeName,
-      conciergeAvatarUrl: imageToUrl(fallbackSite.contact.conciergeAvatar),
-      updatedAt: new Date(),
-    })
-    .onConflictDoUpdate({
-      target: siteSettings.id,
-      set: {
-        brandName: fallbackSite.brand.name,
-        logoUrl: imageToUrl(fallbackSite.brand.logo),
-        seoTitle: fallbackSite.seo.title,
-        seoDescription: fallbackSite.seo.description,
-        whatsapp: fallbackSite.contact.whatsapp,
-        whatsappDisplay: fallbackSite.contact.whatsappDisplay,
-        instagramUrl: fallbackSite.contact.instagramUrl,
-        instagramHandle: fallbackSite.contact.instagramHandle,
-        email: fallbackSite.contact.email,
-        location: fallbackSite.contact.location,
-        footerDescription: fallbackSite.contact.footerDescription,
-        conciergeName: fallbackSite.contact.conciergeName,
-        conciergeAvatarUrl: imageToUrl(fallbackSite.contact.conciergeAvatar),
-        updatedAt: new Date(),
-      },
-    });
+  await ensureSiteSettings(db);
+  const [existingHero] = await db.select({ id: heroSlides.id }).from(heroSlides).limit(1);
+  const [existingTour] = await db.select({ id: tours.id }).from(tours).limit(1);
+  const [existingReview] = await db.select({ id: reviews.id }).from(reviews).limit(1);
 
-  await db.delete(heroSlides);
-  await db.delete(tours);
-  await db.delete(reviews);
-
-  if (fallbackSite.hero.length > 0) {
+  if (!existingHero && fallbackSite.hero.length > 0) {
     await db.insert(heroSlides).values(
       fallbackSite.hero.map((slide, index) => ({
         imageUrl: imageToUrl(slide.image),
@@ -361,33 +351,35 @@ export async function seedFallbackContent() {
     );
   }
 
-  for (const [index, tour] of fallbackSite.tours.entries()) {
-    const [createdTour] = await db
-      .insert(tours)
-      .values({
-        slug: tour.slug,
-        title: tour.title,
-        tag: tour.tag ?? null,
-        description: tour.description,
-        price: tour.price,
-        sortOrder: index,
-        active: true,
-        updatedAt: new Date(),
-      })
-      .returning({ id: tours.id });
+  if (!existingTour) {
+    for (const [index, tour] of fallbackSite.tours.entries()) {
+      const [createdTour] = await db
+        .insert(tours)
+        .values({
+          slug: tour.slug,
+          title: tour.title,
+          tag: tour.tag ?? null,
+          description: tour.description,
+          price: tour.price,
+          sortOrder: index,
+          active: true,
+          updatedAt: new Date(),
+        })
+        .returning({ id: tours.id });
 
-    if (tour.images.length > 0) {
-      await db.insert(tourImages).values(
-        tour.images.map((image, imageIndex) => ({
-          tourId: createdTour.id,
-          imageUrl: imageToUrl(image),
-          sortOrder: imageIndex,
-        })),
-      );
+      if (tour.images.length > 0) {
+        await db.insert(tourImages).values(
+          tour.images.map((image, imageIndex) => ({
+            tourId: createdTour.id,
+            imageUrl: imageToUrl(image),
+            sortOrder: imageIndex,
+          })),
+        );
+      }
     }
   }
 
-  if (fallbackSite.reviews.length > 0) {
+  if (!existingReview && fallbackSite.reviews.length > 0) {
     await db.insert(reviews).values(
       fallbackSite.reviews.map((review, index) => ({
         stars: review.stars,
