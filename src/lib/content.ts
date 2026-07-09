@@ -1,4 +1,5 @@
 import { asc, eq } from "drizzle-orm";
+import { cache } from "react";
 import { site as fallbackSite } from "@/content/site";
 import { getDb } from "@/lib/db";
 import {
@@ -17,10 +18,10 @@ export interface EditableSiteContentResult {
   usingFallback: boolean;
 }
 
-export async function getPublicSiteContent(): Promise<SiteContent> {
+export const getPublicSiteContent = cache(async (): Promise<SiteContent> => {
   const editable = await getEditableSiteContent();
   return editable.content;
-}
+});
 
 export async function getEditableSiteContent(): Promise<EditableSiteContentResult> {
   const db = getDb();
