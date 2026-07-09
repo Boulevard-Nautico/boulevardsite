@@ -44,11 +44,15 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   );
 }
 
+const secret =
+  process.env.NEXTAUTH_SECRET ??
+  process.env.AUTH_SECRET ??
+  (process.env.NODE_ENV === "production"
+    ? undefined
+    : "boulevard-admin-local-secret-change-me");
+
 export const authOptions: NextAuthOptions = {
-  secret:
-    process.env.NEXTAUTH_SECRET ??
-    process.env.AUTH_SECRET ??
-    "boulevard-admin-local-secret-change-me",
+  secret,
   session: {
     strategy: "jwt",
   },
